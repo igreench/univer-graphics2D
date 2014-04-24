@@ -2,6 +2,8 @@
 
 #include "math.h"
 
+#include <QtCore>
+
 
 
 Polygon::Polygon()
@@ -12,6 +14,13 @@ Polygon::Polygon()
 
 void Polygon::addPoint(QPoint point) {
     points.push_back(point);
+}
+
+bool Polygon::xLessThan(const QPoint &p1, const QPoint &p2){
+    return p1.x() < p2.x();
+}
+bool Polygon::yLessThan(const QPoint &p1, const QPoint &p2){
+    return p1.y() < p2.y();
 }
 
 
@@ -45,6 +54,7 @@ QImage Polygon::getImage(int width, int height) {
         }
         int i1 = points.size() - 1;
         int i2 = 0;
+        drawPixel(&backBuffer, points[i1], Qt::yellow);
         if (points[i1].y() < points[i2].y())
         {
             lines.push_back(new Line(points[i1], points[i2]));
@@ -93,20 +103,35 @@ QImage Polygon::getImage(int width, int height) {
                             isGood = false;
                         }
                     }
-                    if (isGood) {
-                        crossPoints.push_back(point);
+                    if (isGood) {                        
+                        if ((point != (*iter)->p1) && (point != (*iter)->p2)){
+                            crossPoints.push_back(point);
+                        }
                     }
                 }
             }
 
             qDebug() << "crossPoints:";
             qDebug() << crossPoints;
-            for (int i = 0; i < crossPoints.size() - 1; i++) {
-                qDebug() << crossPoints[i];
+
+
+            QMap<int, QPoint> map;
+            for (int i = 0; i < crossPoints.size(); i++) {
+                map.insert(crossPoints[i].x(), crossPoints[i]);
+            }
+
+            QList <QPoint> sortedCrossPoints = map.values();
+
+            qDebug() << "sortedCrossPoints:";
+            qDebug() << sortedCrossPoints;
+
+            //qSort(crossPoints.begin(), crossPoints.end(), xLessThan);
+            for (int i = 0; i < sortedCrossPoints.size() - 1; i++) {
+                qDebug() << sortedCrossPoints[i];
                 if (0 == i % 2) {
-                    drawLineByOX(&backBuffer, crossPoints[i].x(),
-                                 crossPoints[i + 1].x(),
-                                 crossPoints[i].y(),
+                    drawLineByOX(&backBuffer, sortedCrossPoints[i].x(),
+                                 sortedCrossPoints[i + 1].x(),
+                                 sortedCrossPoints[i].y(),
                                  Qt::red);
                 }
             }

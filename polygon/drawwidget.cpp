@@ -3,15 +3,18 @@
 DrawWidget::DrawWidget(QWidget *parent) :
     QWidget(parent)
 {
+    //triangle
     polygon.addPoint(QPoint(100, 100));
     polygon.addPoint(QPoint(200, 200));
     polygon.addPoint(QPoint(150, 250));
 
+    //square
     /*polygon.addPoint(QPoint(100, 100));
     polygon.addPoint(QPoint(200, 100));
     polygon.addPoint(QPoint(200, 200));
     polygon.addPoint(QPoint(100, 200));*/
 
+    //polygon1
     /*polygon.addPoint(QPoint(100, 100));
     polygon.addPoint(QPoint(120, 120));
     polygon.addPoint(QPoint(140, 100));

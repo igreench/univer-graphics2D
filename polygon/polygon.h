@@ -114,6 +114,9 @@ private:
 
     bool isPointInArea(QPoint point);
 
+    bool xLessThan(const QPoint &p1, const QPoint &p2);
+    bool yLessThan(const QPoint &p1, const QPoint &p2);
+
 };
 
 #endif // POLYGON_H
