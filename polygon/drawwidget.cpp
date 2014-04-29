@@ -7,12 +7,14 @@ DrawWidget::DrawWidget(QWidget *parent) :
     polygon.addPoint(QPoint(100, 100));
     polygon.addPoint(QPoint(200, 200));
     polygon.addPoint(QPoint(150, 250));
+    //*/
 
     //square
     /*polygon.addPoint(QPoint(100, 100));
     polygon.addPoint(QPoint(200, 100));
     polygon.addPoint(QPoint(200, 200));
-    polygon.addPoint(QPoint(100, 200));*/
+    polygon.addPoint(QPoint(100, 200));
+    //*/
 
     //polygon1
     /*polygon.addPoint(QPoint(100, 100));
@@ -21,7 +23,20 @@ DrawWidget::DrawWidget(QWidget *parent) :
     polygon.addPoint(QPoint(160, 120));
     polygon.addPoint(QPoint(180, 100));
     polygon.addPoint(QPoint(180, 200));
-    polygon.addPoint(QPoint(100, 200));*/
+    polygon.addPoint(QPoint(100, 200));
+    //*/
+
+    //polygon2
+    /*polygon.addPoint(QPoint(100, 100));
+    polygon.addPoint(QPoint(120, 120));
+    polygon.addPoint(QPoint(140, 100));
+    polygon.addPoint(QPoint(160, 120));
+    polygon.addPoint(QPoint(180, 100));
+    polygon.addPoint(QPoint(300, 100));
+    polygon.addPoint(QPoint(200, 150));
+    polygon.addPoint(QPoint(180, 200));
+    polygon.addPoint(QPoint(100, 200));
+    //*/
 }
 
 void DrawWidget::paintEvent(QPaintEvent */*event*/) {

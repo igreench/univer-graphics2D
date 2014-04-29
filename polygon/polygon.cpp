@@ -16,14 +16,6 @@ void Polygon::addPoint(QPoint point) {
     points.push_back(point);
 }
 
-bool Polygon::xLessThan(const QPoint &p1, const QPoint &p2){
-    return p1.x() < p2.x();
-}
-bool Polygon::yLessThan(const QPoint &p1, const QPoint &p2){
-    return p1.y() < p2.y();
-}
-
-
 QImage Polygon::getImage(int width, int height) {
     this->width = width;
     this->height = height;
@@ -40,13 +32,9 @@ QImage Polygon::getImage(int width, int height) {
         int miny = height;
 
         for (int i = 0; i < points.size() - 1; i++) {
-            drawPixel(&backBuffer, points[i], Qt::yellow);
-            if (points[i].y() < points[i+1].y())
-            {
+            if (points[i].y() < points[i+1].y()) {
                 lines.push_back(new Line(points[i], points[i + 1]));
-            }
-            else
-            {
+            } else {
                 lines.push_back(new Line(points[i+1], points[i]));
             }
             miny = __min(points[i].y(), miny);
@@ -54,95 +42,51 @@ QImage Polygon::getImage(int width, int height) {
         }
         int i1 = points.size() - 1;
         int i2 = 0;
-        drawPixel(&backBuffer, points[i1], Qt::yellow);
-        if (points[i1].y() < points[i2].y())
-        {
+
+        if (points[i1].y() < points[i2].y()) {
             lines.push_back(new Line(points[i1], points[i2]));
-        }
-        else
-        {
+        } else {
             lines.push_back(new Line(points[i2], points[i1]));
         }
-        //lines.push_back(new Line(points[points.size() - 1], points[0]));
-        //drawPixel(&backBuffer, points[points.size() - 1], Qt::yellow);
         miny = __min(points[points.size() - 1].y(), miny);
         maxy = __max(points[points.size() - 1].y(), maxy);
 
-        QVector <Line*> filledLines;
-        qDebug() << "drawing:";
         QVector <Line*> activeLines;
+
         for (int y = miny; y < maxy; y++) {
             QVector <QPoint> crossPoints;
-            qDebug() << "y: " << y;
-            Line line(QPoint(0, y), QPoint(width - 1, y));
+
+            for (int i = activeLines.size() - 1; i >= 0 ; i--) {
+                if (y >= activeLines[i]->p2.y()) {
+                    activeLines.remove(i);
+                }
+            }
 
             for (int i = 0; i < lines.size(); i++) {
                 if (y == lines[i]->p1.y()) {
                     activeLines.push_back(lines[i]);
                 }
             }
-            QVector<Line*>::iterator iter = activeLines.begin();
-            //for (int i = 0; i < activeLines.size(); i++) {
-            for (; iter != activeLines.end(); iter++) {
-                //
-                if (y == (*iter)->p2.y()) {
-                    iter = activeLines.erase(iter);
-                    if (iter == activeLines.end())
-                        break;
-                }
 
-                qDebug() << "line:";
-                qDebug() << (*iter)->p1;
-                qDebug() << (*iter)->p2;
-                QPoint point;
-                if ((*iter)->intersected(line, point)) {
-                    qDebug() << "intersected";
-                    bool isGood = true;
-                    for (int k = 0; k < crossPoints.size(); k++) {
-                        if (crossPoints[k] == point) {
-                            isGood = false;
-                        }
-                    }
-                    if (isGood) {                        
-                        if ((point != (*iter)->p1) && (point != (*iter)->p2)){
-                            crossPoints.push_back(point);
-                        }
-                    }
+            for (int i = activeLines.size() - 1; i >= 0 ; i--) {
+                if (y >= activeLines[i]->p2.y()) {
+                    activeLines.remove(i);
                 }
+                crossPoints.push_back(activeLines[i]->crossPoint(y));
             }
 
-            qDebug() << "crossPoints:";
-            qDebug() << crossPoints;
+            qSort(crossPoints.begin(), crossPoints.end(), xLessThan);
 
-
-            QMap<int, QPoint> map;
-            for (int i = 0; i < crossPoints.size(); i++) {
-                map.insert(crossPoints[i].x(), crossPoints[i]);
-            }
-
-            QList <QPoint> sortedCrossPoints = map.values();
-
-            qDebug() << "sortedCrossPoints:";
-            qDebug() << sortedCrossPoints;
-
-            //qSort(crossPoints.begin(), crossPoints.end(), xLessThan);
-            for (int i = 0; i < sortedCrossPoints.size() - 1; i++) {
-                qDebug() << sortedCrossPoints[i];
-                if (0 == i % 2) {
-                    drawLineByOX(&backBuffer, sortedCrossPoints[i].x(),
-                                 sortedCrossPoints[i + 1].x(),
-                                 sortedCrossPoints[i].y(),
+            for (int i = 0; i < crossPoints.size() - 1; i++) {
+                if ((0 == i % 2) && (crossPoints[i].x() != crossPoints[i + 1].x())) {
+                    drawLineByOX(&backBuffer, crossPoints[i].x(),
+                                 crossPoints[i + 1].x(),
+                                 crossPoints[i].y(),
                                  Qt::red);
                 }
             }
         }
-
-        for (int i = 0; i < filledLines.size(); i++) {
-            drawLineByOX(&backBuffer, filledLines[i]->p1.x(), filledLines[i]->p2.x(), filledLines[i]->p1.y(), Qt::red);
-        }
-
     }
-
     return backBuffer;
 }
 
