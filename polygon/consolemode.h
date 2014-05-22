@@ -13,6 +13,8 @@ public:
     void clear();
     void setComment(QString comment);
 
+    QImage getImage(int width, int height);
+
 private:
     int PanelWidth;
     int PanelHeight;

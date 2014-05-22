@@ -8,19 +8,7 @@
 
 #include <QDebug>
 
-struct Line {
-    Line(QPoint p1, QPoint p2) {
-        this->p1 = p1;
-        this->p2 = p2;
-    }
-    QPoint p1;
-    QPoint p2;
-
-    QPoint crossPoint(int y) {
-        int x = p1.x() + (p2.x() - p1.x()) * (p1.y() - y) / (p1.y() - p2.y());
-        return QPoint(x, y);
-    }
-};
+#include "line.h"
 
 class Polygon
 {
@@ -32,6 +20,9 @@ public:
     QImage getImage(int width, int height);
 
     QVector <QPoint> getPoints();
+    QVector <Line *> getLines();
+
+    bool createLines();
 
 private:
     QVector <QPoint> points;
@@ -45,6 +36,8 @@ private:
 
     int width;
     int height;
+    int miny;
+    int maxy;
 
     bool isPointInArea(QPoint point);
 

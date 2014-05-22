@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QPainter>
+#include <QMouseEvent>
 #include "polygon.h"
 
 class DrawWidget : public QWidget
@@ -11,18 +12,26 @@ class DrawWidget : public QWidget
 public:
     explicit DrawWidget(QWidget *parent = 0);
 
-    void addPoint(QPoint point);
-    void clear();
     void setComment(QString comment);
-
     QVector <QPoint> getPoints();
+    QImage getImage(int width, int height);
+    void fill();
+
+public slots:
+    void clear();
+    void addPoint(QPoint point);
 
 protected:
-    void paintEvent(QPaintEvent *event);
+    virtual void paintEvent(QPaintEvent *event);
+    virtual void mousePressEvent( QMouseEvent * event);
+    virtual void mouseMoveEvent( QMouseEvent * event);
 
 private:
     Polygon polygon;
     QString comment;
+    int mx, my;
+    bool isTracking;
+    bool isDrawn;
 
 };
 

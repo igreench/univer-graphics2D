@@ -1,7 +1,6 @@
 #include "consolemode.h"
 
-ConsoleMode::ConsoleMode()
-{
+ConsoleMode::ConsoleMode() {
     PanelWidth = 0;
     PanelHeight = 0;
 }
@@ -21,4 +20,8 @@ void ConsoleMode::clear() {
 
 void ConsoleMode::setComment(QString comment) {
     this->comment = comment;
+}
+
+QImage ConsoleMode::getImage(int width, int height) {
+    return polygon.getImage(width, height);
 }

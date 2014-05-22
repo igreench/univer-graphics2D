@@ -1,19 +1,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
-{
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),ui(new Ui::MainWindow) {
     ui->setupUi(this);
-
     connect(ui->actionLoad_config, SIGNAL(triggered()), this, SLOT(loadConfig()));
     connect(ui->actionSave_config, SIGNAL(triggered()), this, SLOT(saveConfig()));
     connect(ui->actionSave_Image, SIGNAL(triggered()), this, SLOT(saveImage()));
+    connect(ui->actionClear, SIGNAL(triggered()), ui->widget, SLOT(clear()));
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
 }
 
@@ -129,8 +125,10 @@ void MainWindow::loadConfig() {
             qDebug() << "PanelHeight:" << node.text();
         }
     }
+
+    ui->widget->fill();
 }
 
 void MainWindow::saveImage() {
-    //ui->widget->circle.save("out.png", 300, 300);
+    ui->widget->getImage(width(), height()).save("out.png");
 }

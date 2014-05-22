@@ -4,32 +4,24 @@
 
 #include <QtCore>
 
-
-
 Polygon::Polygon()
 {
     width = 0;
     height = 0;
+    maxy = 0;
+    miny = height;
 }
 
 void Polygon::addPoint(QPoint point) {
     points.push_back(point);
 }
 
-QImage Polygon::getImage(int width, int height) {
-    this->width = width;
-    this->height = height;
-
+bool Polygon::createLines() {
     lines.clear();
-    realPoints.clear();
-
-    QImage backBuffer(width, height, QImage::Format_RGB888);
-    backBuffer.fill(qRgb(0, 0, 0));
-
     if (points.size() > 2) {
 
-        int maxy = 0;
-        int miny = height;
+        maxy = 0;
+        miny = height;
 
         for (int i = 0; i < points.size() - 1; i++) {
             if (points[i].y() < points[i+1].y()) {
@@ -51,25 +43,42 @@ QImage Polygon::getImage(int width, int height) {
         miny = __min(points[points.size() - 1].y(), miny);
         maxy = __max(points[points.size() - 1].y(), maxy);
 
+        return true;
+    }
+    return false;
+}
+
+QImage Polygon::getImage(int width, int height) {
+    this->width = width;
+    this->height = height;
+
+    lines.clear();
+    realPoints.clear();
+
+    QImage backBuffer(width, height, QImage::Format_RGB888);
+    backBuffer.fill(qRgb(0, 0, 0));
+
+    if (createLines()) {
+
         QVector <Line*> activeLines;
 
         for (int y = miny; y < maxy; y++) {
             QVector <QPoint> crossPoints;
 
             for (int i = activeLines.size() - 1; i >= 0 ; i--) {
-                if (y >= activeLines[i]->p2.y()) {
+                if (y >= activeLines[i]->getP2().y()) {
                     activeLines.remove(i);
                 }
             }
 
             for (int i = 0; i < lines.size(); i++) {
-                if (y == lines[i]->p1.y()) {
+                if (y == lines[i]->getP1().y()) {
                     activeLines.push_back(lines[i]);
                 }
             }
 
             for (int i = activeLines.size() - 1; i >= 0 ; i--) {
-                if (y >= activeLines[i]->p2.y()) {
+                if (y >= activeLines[i]->getP2().y()) {
                     activeLines.remove(i);
                 }
                 crossPoints.push_back(activeLines[i]->crossPoint(y));
@@ -120,7 +129,6 @@ void Polygon::drawLineByOX(QImage *backBuffer, int x1, int x2, int y, QColor col
     for (int x = x1; x != x2; x += signx) {
         drawPixel(backBuffer, x, y, color);
     }
-
 }
 
 void Polygon::clear() {
@@ -136,4 +144,8 @@ bool Polygon::isPointInArea(QPoint point) {
 
 QVector <QPoint> Polygon::getPoints() {
     return points;
+}
+
+QVector <Line *> Polygon::getLines() {
+    return lines;
 }

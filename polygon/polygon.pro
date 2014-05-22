@@ -17,11 +17,13 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     polygon.cpp \
     drawwidget.cpp \
-    consolemode.cpp
+    consolemode.cpp \
+    line.cpp
 
 HEADERS  += mainwindow.h \
     polygon.h \
     drawwidget.h \
-    consolemode.h
+    consolemode.h \
+    line.h
 
 FORMS    += mainwindow.ui
